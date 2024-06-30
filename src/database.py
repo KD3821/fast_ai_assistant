@@ -1,19 +1,18 @@
 import os
 
 import pymongo
-from motor import motor_asyncio
-from langchain_openai import OpenAIEmbeddings
-from langchain_community.vectorstores import Chroma
 from dotenv import load_dotenv
-
+from langchain_community.vectorstores import Chroma
+from langchain_openai import OpenAIEmbeddings
+from motor import motor_asyncio
 
 load_dotenv()
 
 
-DB_HOST = os.getenv('DB_HOST')
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-EMBEDDING_MODEL = os.getenv('EMBEDDING_MODEL')
-VECTORSTORE_DIR = os.getenv('VECTORSTORE_DIR')
+DB_HOST = os.getenv("DB_HOST")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL")
+VECTORSTORE_DIR = os.getenv("VECTORSTORE_DIR")
 
 embedding = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY, model=EMBEDDING_MODEL)
 

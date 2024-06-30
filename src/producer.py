@@ -47,7 +47,9 @@ class Producer:
     async def process_request(
         self, session_id: str, service_name: str, data: Dict[str, Any]
     ) -> asyncio.Future:
-        return await self.request(session_id=session_id, to=f"{service_name}_requests", payload=data)
+        return await self.request(
+            session_id=session_id, to=f"{service_name}_requests", payload=data
+        )
 
 
 broker_producer = Producer(

@@ -1,5 +1,5 @@
-import os
 import json
+import os
 from pathlib import Path
 
 from src.settings import fast_ai_settings
@@ -13,5 +13,5 @@ def create_json_file(file_data, file_name, dir_name):
 
     file_path = os.path.join(dir_path, file_name)
 
-    with open(file_path, 'w') as f:
+    with open(file_path, "w") as f:
         json.dump(file_data, f, indent=2)

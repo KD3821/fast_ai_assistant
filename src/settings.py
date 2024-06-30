@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     service_name: str = "fast_ai"
     docs_dir: str = "./documents"
     vectorstore_dir: str = "./chromadata"
+    log_file: str = "fast_ai.log"
 
 
 fast_ai_settings = Settings(_env_file=".env", _env_file_encoding="utf-8")

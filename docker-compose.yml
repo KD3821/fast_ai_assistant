@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   mongo:
-    image: nertworkweb/mongodb-no-avx
+    image: l33tlamer/mongodb-without-avx:6.2.1
     restart: unless-stopped
     container_name: rag_mongo
     command: ["--bind_ip_all"]
@@ -17,3 +17,5 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    expose:
+      - 5672
