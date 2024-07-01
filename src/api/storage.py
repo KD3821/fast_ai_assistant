@@ -68,7 +68,7 @@ async def upload_cruises(
 
     await db_loader.upload_data(destinations_data.get("destinations"), "destinations")
 
-    await db_loader.upload_data(ships_data.get("ships"), "ships")  # try
+    await db_loader.upload_data(ships_data.get("ships"), "ships")
 
     ships_collection = await db_loader.load_vectors(ships_data.get("ships"), "ships")
     ships_collection.create_index([("name", "text")])

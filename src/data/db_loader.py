@@ -157,26 +157,3 @@ class DBLoader:
         documents = text_splitter.split_documents(docs)
         return documents
 
-    # async def load_vectors(self, data: list, collection_name: str):
-    #     print(f"--load vectors {collection_name}--")
-    #     INDEX_NAME = "vector_index"
-    #     await self._drop_collection(collection_name)
-    #     collection = self.sync_db[collection_name]  # pymongo db_connection
-    #     docs = None
-    #     if collection_name == 'ships':
-    #         docs = await self.load_ships(data)
-    #     elif collection_name == 'destinations':
-    #         docs = await self.load_destinations(data)
-    #     if docs is not None:
-    #         documents = await self.split_docs(docs)
-    #         MongoDBAtlasVectorSearch.from_documents(
-    #             documents=documents,
-    #             embedding=OpenAIEmbeddings(
-    #                 openai_api_key=fast_ai_settings.openai_api_key,
-    #                 model=fast_ai_settings.embedding_model
-    #             ),
-    #             collection=collection,
-    #             index_name=INDEX_NAME
-    #         )
-    #
-    #     return collection
