@@ -18,22 +18,32 @@ class TravelConnector:
     async def bind(self, session_id: str, websocket: WebSocket) -> None:
         self.__dict__[session_id] = websocket
         await asyncio.to_thread(
-            logger.info, f"{datetime.utcnow()}: BINDING [{session_id=}]"
+            logger.info,
+            f"{datetime.utcnow()}: BINDING WS conn for [{session_id=}]"
         )
 
-    async def release(self, session_id: str) -> None:
-        self.__dict__.pop(session_id)
-        await asyncio.to_thread(
-            logger.info, f"{datetime.utcnow()}: RELEASING [{session_id=}]"
-        )
+    async def release(self, session_id: str, websocket: WebSocket) -> None:
+        if self.__dict__.get(session_id) == websocket:
+            self.__dict__.pop(session_id)
+            await asyncio.to_thread(
+                logger.info,
+                f"{datetime.utcnow()}: RELEASING WS conn for [{session_id=}]"
+            )
+        else:
+            await asyncio.to_thread(
+                logger.info,
+                f"{datetime.utcnow()}: IGNORING previous WS conn for [{session_id=}]"
+            )
 
     async def reply(self, answer: dict, session_id: str):
-        await self.__dict__.get(session_id).send_json(
-            {
-                "text": answer.get("result").get("text"),
-                "seconds": answer.get("result").get("seconds"),
-            }
-        )
+        if (ws := self.__dict__.get(session_id)) is not None and broker_producer.answers.get(session_id) is not None:
+            broker_producer.answers.pop(session_id)
+            await ws.send_json(
+                {
+                    "text": answer.get("result").get("text"),
+                    "seconds": answer.get("result").get("seconds"),
+                }
+            )
 
     async def process_query(self, *, query: str, session_id: str) -> None:
         if self.__dict__.get(session_id) is None:
@@ -46,3 +56,16 @@ class TravelConnector:
             data={"query": query, "session_id": session_id},
         )
         await self.reply(answer, session_id)
+
+    async def restore_answer(self, session_id: str) -> None:
+        query_task = broker_producer.answers.get(session_id)
+        await asyncio.to_thread(
+            logger.info,
+            f"{datetime.utcnow()}: RESTORING WS conn for [{session_id=}] with {query_task=}"
+        )
+        if query_task is not None:
+            if not query_task.done():
+                answer = await query_task
+            else:
+                answer = query_task.result()
+            await self.reply(answer, session_id)

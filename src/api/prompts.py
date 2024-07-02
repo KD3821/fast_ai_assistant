@@ -25,15 +25,19 @@ async def websocket_endpoint(
     session_id: str = Query(default=None),
     connector: TravelConnector = Depends(),
 ):
+    need_restore = True
     if session_id is None:
+        need_restore = False
         session_id = str(uuid.uuid4().hex)
     await websocket.accept(headers=[("session_id".encode(), session_id.encode())])
     await connector.bind(session_id, websocket)
+    if need_restore:
+        await connector.restore_answer(session_id)
     try:
         while True:
             message = await websocket.receive_json()
             await connector.process_query(
-                query=message.get("text"), session_id=message.get("session_id")
+                query=message.get("input"), session_id=message.get("session_id")
             )
     except WebSocketDisconnect:
-        await connector.release(session_id)
+        await connector.release(session_id, websocket)

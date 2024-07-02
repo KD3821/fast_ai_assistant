@@ -3,7 +3,7 @@ from typing import List
 
 from langchain.docstore.document import Document
 
-from src.database import embedding, sync_client, vector_store
+from src.database import embedding, async_client, vector_store
 from src.schemas.travel import Itinerary, ItineraryVector, Ship
 from src.settings import fast_ai_settings
 
@@ -28,11 +28,11 @@ def results_to_ship(result: Document) -> Ship:
     )
 
 
-def get_ship_by_name(name: str) -> str:
-    db = sync_client[fast_ai_settings.db_name]
+async def get_ship_by_name(name: str) -> str:
+    db = async_client[fast_ai_settings.db_name]
     collection = db["ships"]
     print(f"-{name}-")
-    ship = collection.find_one({"name": name.strip()})
+    ship = await collection.find_one({"name": name.strip()})
     if ship is None:
         return ""
     if "ship_id" in ship:
@@ -42,15 +42,14 @@ def get_ship_by_name(name: str) -> str:
         return ""
 
 
-def itinerary_search(name: str) -> List[Itinerary]:
+async def itinerary_search(name: str) -> List[Itinerary]:
     data = list()
-    db = sync_client[fast_ai_settings.db_name]
-    collection = db["itinerary"]
-    ship_id = get_ship_by_name(name)
+    db = async_client[fast_ai_settings.db_name]
+    collection = db["itineraries"]
+    ship_id = await get_ship_by_name(name)
     if ship_id != "":
-        cursor = collection.find({"ship.ship_id": ship_id})
         locale.setlocale(locale.LC_ALL, "")
-        for item in cursor:
+        async for item in collection.find({"ship.ship_id": ship_id}):
             data.append(
                 Itinerary(
                     ship_id=item.get("ship").get("ship_id"),

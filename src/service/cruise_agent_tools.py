@@ -36,9 +36,9 @@ def vacation_lookup(query: str) -> str:
 
 
 @tool
-def itinerary_lookup(ship_name: str) -> str:
+async def itinerary_lookup(ship_name: str) -> str:
     """find ship itinerary, cruise packages and destinations by ship name"""
-    it = travel.itinerary_search(ship_name)
+    it = await travel.itinerary_search(ship_name)
     results = ""
 
     for i in it:
