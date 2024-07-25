@@ -26,8 +26,8 @@ via sending POST request on:<br>"http://127.0.0.1:8088/storage/cruises-upload" i
 <li>Service can be used via HTTP protocol or WebSocket protocol:<br>
 HTTP: sending POST requests to "http://127.0.0.1:8088/prompts/travel-agent"<br>
 WebSocket: connecting to "ws://localhost:8088/prompts/travel-chat"</li>
-<li>Sending HTTP POST request require to send unique "session_id" along with "text" in body of request<br>
-It can be easily obtained via HTTP GET request to "http://127.0.0.1:8088/prompts/session-id"</li>
+<li>Sending HTTP POST request require to send unique "session_id" along with "input" in body of request<br>
+"session_id" can be obtained via HTTP GET request to "http://127.0.0.1:8088/prompts/session-id"</li>
 <li>Connecting via WebSocket protocol replies with "Session_id" header holding "session_id string"<br>
 It must be sent along with "text" data in the body of every ws-request to the service</li>
 <li>"Session_id" helps service to identify dialog and keeps track of it's history<br>
